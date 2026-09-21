@@ -68,10 +68,27 @@ def main():
     doc.add_paragraph()
     doc.add_picture(str(OUT / "cv_by_fold.png"), width=Inches(6))
     doc.add_paragraph(
-        "Market features (market_index, quote_signal) did not improve time-based CV (lgb_full vs "
-        "lgb_no_market), so the final model excludes them. This also lets one model serve both the 12,000 "
-        "validation loads and the December chart, where those features do not exist. The raw-label RMSE is "
-        "dominated by the corrupted labels, which no model can predict.")
+        "Market features (market_index, quote_signal) did not improve time-based CV, so the final model "
+        "excludes them. I tested them raw (3.06% MAPE) and as four stationary transforms - deviation from "
+        "the daily mean, level relative to a trailing 28-day mean, and 7d/28d momentum - and none beat the "
+        "2.83% of the model without them; the best variant reached 2.95%.")
+    doc.add_paragraph(
+        "The per-fold pattern explains why. Raw market features win the early folds (2.84% vs 6.03% on June) "
+        "and lose the late ones (4.62% vs 1.91% on September). That tracks the market regime: market_index "
+        "climbs from 0.91 in January to 1.30 in May, then reverses and falls to 0.87 by September. While the "
+        "trend continues the feature helps, but gradient-boosted trees cannot extrapolate beyond their "
+        "trained range, so when the regime reverses the model is confidently wrong. The signal is real but "
+        "unstable, and the instability costs more than the signal earns.")
+    doc.add_paragraph(
+        "The decisive folds are September and October, the closest analogues to the Nov-Dec prediction "
+        "window, where excluding market features wins clearly (1.91% and 1.75% against 4.62% and 3.18%). "
+        "market_index is also flat at roughly 0.92-0.95 across November and December, essentially unchanged "
+        "from October, so there is no regime shift for a market feature to capture. The known failure mode "
+        "is a holdout that spans a regime break, as June does.")
+    doc.add_paragraph(
+        "Excluding these features also lets one model serve both the 12,000 validation loads and the "
+        "December chart, where they do not exist. The raw-label RMSE is dominated by the corrupted labels, "
+        "which no model can predict.")
 
     doc.add_heading("4. December prediction", 1)
     doc.add_paragraph(
