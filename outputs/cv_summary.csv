@@ -1,0 +1,9 @@
+scope,model,MAE,RMSE,MAPE,MedAPE
+clean,baseline_rpm,99.687,134.547,4.438,3.899
+clean,lgb_full,71.363,96.986,3.072,2.829
+clean,lgb_no_market,68.49,93.046,2.831,2.576
+clean,ridge,82.466,110.344,3.568,3.223
+raw,baseline_rpm,154.842,654.89,6.711,3.967
+raw,lgb_full,126.703,648.429,5.314,2.866
+raw,lgb_no_market,123.936,647.649,5.113,2.601
+raw,ridge,137.813,651.207,5.843,3.274
