@@ -40,10 +40,12 @@ def main():
 
     doc.add_heading("2. Data-quality issues and fixes", 1)
     for t in [
-        "About 1.4% of posted_rate values (677 rows) are corrupted: rate per mile is about 12x too high or "
-        "about 3x too low, while distance is consistent with the coordinates. They are detected with a "
-        "deliberately low-capacity model (distance + equipment) whose log-residual exceeds 0.5, and removed "
-        "from training only.",
+        "About 1.4% of posted_rate values (677 rows) are corrupted. The corruption is near-symmetric: 340 rows "
+        "sit about 3.5x above the normal rate per mile for their equipment and 337 sit about 3.6x below it, "
+        "spread evenly across months and equipment types. Distance stays consistent with the coordinates on "
+        "these rows, so the rate itself is wrong rather than the lane. They are detected with a deliberately "
+        "low-capacity model (distance + equipment) whose log-residual exceeds 0.5, and removed from training "
+        "only - never from the validation predictions, which must cover all 12,000 loads.",
         "Negative weights (292 train, 145 validation) are sign errors; their magnitudes match the positive "
         "distribution, so I take abs(). Missing weight (300 / 165) uses the equipment median plus an indicator.",
         "Missing market_index (374 / 249) is left as NaN with an indicator.",
